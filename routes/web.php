@@ -19,5 +19,6 @@ Route::get('/', function () {
 
 Route::get('/', 'TaskController@index');
 Route::post('tasks', 'TaskController@store')->name('tasks.store');
-// Route::put('');
+Route::get('task/edit/{task}', 'TaskController@edit')->name('task.edit');
+Route::put('task/{task}', 'TaskController@update')->name('task.update');
 Route::delete('tasks/{task}', 'TaskController@destroy')->name('tasks.destroy');

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -16,8 +18,10 @@ class TaskController extends Controller
     {
         $tasks = Task::latest()->get();
         $tasks->load('user');
+        $users = User::get();
         return view('tasks.index', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
+            'users' => $users
         ]);
     }
 
@@ -39,12 +43,21 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        Task::create([
-            'task_name' => $request->task_name,
-            'start_task_date' => $request->start_task_date,
-            'end_task_date' => $request->end_task_date,
-            'user_id' => $request->user_id,
+        $request->validate([
+            'task_name' => [
+                'required',
+                'unique:tasks'
+            ],
+            'user_id' => 'required',
+            'start_task_date' => 'required',
+            'end_task_date' => 'required',
         ]);
+        $task = new Task;
+        $task->task_name = $request->task_name;
+        $task->start_task_date = $request->start_task_date;
+        $task->end_task_date = $request->end_task_date;
+        $task->user_id = $request->user_id;
+        $task->save();
         return back();
     }
 
@@ -67,7 +80,11 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        //
+        $users = User::get();
+        return view('tasks.edit', [
+            'task' => $task,
+            'users' => $users
+        ]);
     }
 
     /**
@@ -79,7 +96,19 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        //
+        $request->validate([
+            'task_name' => 'required',
+            'user_id' => 'required',
+            'start_task_date' => 'required',
+            'end_task_date' => 'required',
+        ]);
+        $taskUpdate = Task::find($task->id);
+        $taskUpdate->task_name = $request->task_name;
+        $taskUpdate->start_task_date = $request->start_task_date;
+        $taskUpdate->end_task_date = $request->end_task_date;
+        $taskUpdate->user_id = $request->user_id;
+        $taskUpdate->save();
+        return redirect('/');
     }
 
     /**
