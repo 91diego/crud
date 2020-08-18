@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -108,7 +112,9 @@ class TaskController extends Controller
         $taskUpdate->end_task_date = $request->end_task_date;
         $taskUpdate->user_id = $request->user_id;
         $taskUpdate->save();
-        return redirect('/');
+        // session()->flash('message', 'La tarea ha sido actualizada.');
+        return redirect('/home')->with('message', 'Recolección generada exitosamente');
+        // return redirect('/home');
     }
 
     /**

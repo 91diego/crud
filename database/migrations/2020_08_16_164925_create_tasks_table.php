@@ -17,8 +17,8 @@ class CreateTasksTable extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string('task_name');
-            $table->string('start_task_date')->default(Carbon::now());
-            $table->string('end_task_date')->default(Carbon::now());
+            $table->date('start_task_date')->default(Carbon::now());
+            $table->date('end_task_date')->default(Carbon::now());
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
